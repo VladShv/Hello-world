@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EAN-13 Barcode check</title>
+<style>
+input, button {font-size:42px; color:blue;}
+#s {font-size:28px; color:blue;}
+#z {font-size:35px;}
+</style>
+<script>
+var code, zero, test, x, x1, x2, x3, x4;
+var fnt="<font color='blue'>";
+var red="<font color='red'>";
+var digs=12;
+
+function barcode()
+{
+  var zzz=zz=x='', z= n= k= l= z1= 0;
+  var ln=[], kn=[];
+
+  let code=document.getElementById('Code').value
+  
+  for (i=k=0; i<=digs; i++)
+  {  j=1+2*(i%2)
+     x=code.charAt(i)
+     if (isNaN(x)) { ln[ln.length]=l=i; kn[kn.length]=k=j; n=0; }
+     else { n=x; m=(n*j)%10; z=(z+m)%10; }
+  }
+  if (ln.length>1) 
+  { alert('Error: '+ln.length+' digits are corrupted. Clear!'); 
+	return; }
+  
+  if (k==0)
+  {
+    ln[0]=l=digs; kn[0]=k=j; n=0; z=(z+10-m)%10;
+  }
+  z1=z=(10-z)%10;
+
+  if (k!=1)
+  {
+    z=z1=(z1+20)/3%1==0?(z1+20)/3:(z1+10)/3%1==0?(z1+10)/3:z1/3;
+  }
+
+  show(code,l,z);
+}
+
+function show(bcode,bl,bz)
+{ 
+  x1=x2=x3=x4='';
+  for (i=0; i<bcode.length; i++)
+  {
+    if (i!=bl) x=bcode[i]; else x=red+bz+fnt;
+    if (i<4) x1+=x; else if (i<7) x2+=x;
+    else if (i<10) x3+=x; else if (i<=digs) x4+=x;
+  }
+  document.getElementById('Show').innerHTML="<button id='z'>"+x1+"</button>"
+    +"<button id='z'>"+x2+"</button>"+"<button id='z'>"+x3+"</button>"
+	+"<button id='z'>"+x4+"</button>";
+}
+
+function clr(x)
+{ //alert(x);
+  document.getElementById('Code').value=(x=='7'?test:(x=='0'?zero:'729000'));
+  show('0000000000000',digs+1,'0');
+}
+</script>
+</head>
+<body>
+<table border=1>
+<tr><td>
+  <div id='Acts' class='z'></div>
+</tr><tr><td>
+  <input id='Code' size=9 value='7290010237753'>
+</tr><tr><td>
+  <div id='Show' class='z'></div>
+</table>
+<script>
+zero='             ';
+show('0000000000000',digs+1,'0');
+test=document.getElementById('Code').value;
+document.getElementById('Acts').innerHTML="<button id='s' >Ean13</button>"
+  +"<button id='s' onclick=clr('0'); ondblclick=clr('3');>Zero</button>"
+  +"<button id='s' onclick=clr('7');>Test</button>"
+  +" <button id='s' onclick=barcode();>Run !</button>";
+</script>
+</body>
+</html>
